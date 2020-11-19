@@ -33,13 +33,13 @@ def move_files_from_s3_to_redshift(db, table_, s3_bucket_, copy_options_,task_, 
     storage_objects = kwargs["ti"].xcom_pull(task_ids='list_files')
     for storage_object in storage_objects:
         s3_key_ = storage_object
-        S3ToRedshiftTransfer(schema=db,
+        load_to = S3ToRedshiftTransfer(schema=db,
                              table=table_,
                              s3_bucket=s3_bucket_,
                              s3_key=s3_key_,
                              copy_options=copy_options_,
                              task_id=task_)
-
+        load_to.execute(context=None)
 
 with DAG('aaaa-test_airflow',
          schedule_interval='@daily',
